@@ -2,7 +2,8 @@
 
 A working **Next.js + NestJS** monorepo with pnpm, Turborepo, strict TypeScript,
 shared Zod contracts, and PostgreSQL persistence. The example application, Forma,
-lets you create tasks and change their status through the complete stack.
+includes email-verified registration/login, password recovery, rotating sessions, profiles, private tasks, and
+media uploads to database or S3-compatible storage through the complete stack.
 
 The architecture follows SOLID and DRY: business behavior lives in small use cases,
 persistence sits behind a repository port, and frameworks stay at the edges.
@@ -21,8 +22,10 @@ pnpm dev
 - Swagger UI: <http://localhost:4000/docs>
 - OpenAPI: <http://localhost:4000/docs/openapi.json>
 
-No environment file or database is needed for the disposable demo. The API logs a
-notice and the UI labels memory storage. **Tasks disappear when the API restarts.**
+No environment file or database is needed for the disposable demo. Create an account
+in the UI, then open its verification link from `apps/api/output/mail/`.
+**Accounts, sessions, tasks, and files disappear when the API restarts.**
+Use PostgreSQL for durable data; object storage requires durable PostgreSQL metadata.
 The frontend calls a same-origin Next route handler; that handler forwards to Nest.
 
 ## Repository layout
@@ -31,10 +34,12 @@ The frontend calls a same-origin Next route handler; that handler forwards to Ne
 apps/
   web/                         Next App Router application
     src/app/                   Routes, providers, runtime API proxy
-    src/features/tasks/        Task UI and query hooks
+    src/features/              Auth, tasks, account, and media screens/hooks
     src/components/            Shared visual primitives
     src/lib/                   Browser client and server proxy
   api/                         Nest application with Fastify
+    src/modules/identity/      Auth, profiles, password changes, session revocation
+    src/modules/media/         Private uploads, database bytes, object adapters
     src/modules/tasks/
       domain/                  Entity and repository interface
       application/             Framework-independent use cases
@@ -63,6 +68,7 @@ development credentials. It stores data in the `postgres_data` named volume.
 ```sh
 cp apps/api/.env.example apps/api/.env
 cp apps/web/.env.example apps/web/.env.local
+pnpm setup:env
 pnpm db:up
 ```
 
@@ -80,8 +86,10 @@ pnpm db:migrate
 pnpm dev
 ```
 
-The API refuses memory persistence when `NODE_ENV=production`. A readiness check
-queries the tasks table, so a database without migrations reports unavailable.
+The API refuses memory persistence and missing signing secrets when
+`NODE_ENV=production`. Readiness checks verify the migrated identity, task, and media schema.
+See [foundation features](docs/foundation-features.md) for signing keys, cookie settings,
+S3 configuration, token rotation, and the complete endpoint list.
 
 ## Common commands
 
@@ -110,6 +118,7 @@ files live with their applications; the root does not distribute secrets to ever
 ## Containers and deployment
 
 ```sh
+pnpm setup:env
 docker compose up --build -d
 ```
 
@@ -118,10 +127,16 @@ readiness, and exposes Next at <http://localhost:3000>. `docker compose down` st
 services while preserving database storage. The two application Dockerfiles have
 separate build/runtime stages and run as the unprivileged Node user.
 
-For a real deployment, supply managed database credentials, TLS ingress, secret
-management, and product-specific authentication/authorization. The example task API
-has no accounts or tenant isolation. Do not reuse Compose development credentials.
-Run migration jobs once per release before promoting app instances.
+Compose is a local HTTP development stack; `pnpm setup:env` generates a private signing
+key in the ignored root `.env`. Application images default to production, while this
+local Compose file explicitly uses API development settings for HTTP cookies.
+
+For deployment, supply managed database credentials, HTTPS ingress, a stable signing
+secret, `COOKIE_SECURE=true`, API `TRUSTED_ORIGINS`, and web `APP_ORIGIN`. Ownership
+is enforced for tasks and media. Configure SMTP and a trusted HTTPS email link origin;
+see [email verification and recovery](docs/email-auth.md). MFA and administration
+remain product extensions. Do not reuse Compose development credentials. Run
+migration jobs once per release before promoting app instances.
 
 The web container uses a server-only `API_ORIGIN` at **runtime**. It does not need a
 different build for each backend URL. Nest does not expose CORS by default; browser
@@ -130,16 +145,23 @@ an explicit allowed-origin policy for that deployment.
 
 CI runs quality checks, real PostgreSQL integration tests, container builds, and a
 full-stack HTTP smoke check. Dependency updates are grouped for related frameworks.
-Remote Turbo caching is optional and is not configured with any hosted service.
+S3 integration checks run when `TEST_S3_ENDPOINT` and disposable test-bucket settings
+are supplied; normal CI does not contact a cloud bucket. Remote Turbo caching is optional and is not configured with any hosted service.
 
 ## Read next
 
+- [Email verification and recovery](docs/email-auth.md): local inbox, SMTP, tokens, outbox, and migration behavior.
+- [Foundation features](docs/foundation-features.md): auth, sessions, profiles, uploads, caching, and deployment settings.
 - [Research and source links](docs/research.md): alternatives and selection rationale.
 - [Architecture](docs/architecture.md): dependency rules, data flow, extension guide.
 - [Design patterns](docs/design-patterns.md): concrete uses and the full requested catalog.
 - [Architecture decisions](docs/decisions/0001-workspace-and-application-boundaries.md).
 - [Verification](docs/verification.md): checks actually run and remaining limits.
 - [Implementation plan](docs/plan.md).
+
+The browser preview uses HttpOnly cookies and stores no access or refresh token in
+JavaScript storage. Request bodies for direct API mutations need the
+`x-csrf-protection: 1` header; the shared API client adds it automatically.
 
 ## Troubleshooting
 

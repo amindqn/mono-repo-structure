@@ -2,7 +2,7 @@ import type { TaskRepository } from '../domain/task.repository.js';
 
 export class ListTasks {
   constructor(private readonly repository: TaskRepository) {}
-  execute() {
-    return this.repository.listRecent();
+  execute(ownerId: string) {
+    return this.repository.listRecent(ownerId);
   }
 }

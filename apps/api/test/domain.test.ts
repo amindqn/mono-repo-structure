@@ -8,12 +8,15 @@ describe('task behavior independent of Nest and PostgreSQL', () => {
   it('keeps domain invariants and snapshots isolated', () => {
     const task = Task.create({
       id: 'task-id',
+      ownerId: 'owner-id',
       title: '  Build well  ',
       createdAt: '2026-01-01T00:00:00.000Z',
     });
     Object.assign(task.toSnapshot(), { title: 'changed outside the entity' });
     expect(task.toSnapshot().title).toBe('Build well');
-    expect(() => Task.create({ id: 'id', title: ' ', createdAt: 'now' })).toThrow();
+    expect(() =>
+      Task.create({ id: 'id', ownerId: 'owner-id', title: ' ', createdAt: 'now' }),
+    ).toThrow();
   });
 
   it('creates deterministic tasks through injected identity and clock dependencies', async () => {
@@ -23,16 +26,21 @@ describe('task behavior independent of Nest and PostgreSQL', () => {
       () => 'stable-id',
       () => new Date('2026-01-01T00:00:00Z'),
     );
-    const task = await create.execute('  Ship it  ');
+    const task = await create.execute('  Ship it  ', 'owner-id');
     expect(task.toSnapshot()).toEqual({
       id: 'stable-id',
+      ownerId: 'owner-id',
       title: 'Ship it',
       status: 'open',
       createdAt: '2026-01-01T00:00:00.000Z',
     });
     const change = new ChangeTaskStatus(repository);
-    expect((await change.execute('stable-id', 'done')).toSnapshot().status).toBe('done');
-    await expect(change.execute('missing', 'done')).rejects.toThrow('Task was not found');
+    expect((await change.execute('stable-id', 'done', 'owner-id')).toSnapshot().status).toBe(
+      'done',
+    );
+    await expect(change.execute('missing', 'done', 'owner-id')).rejects.toThrow(
+      'Task was not found',
+    );
   });
 
   it('bounds recent results and sorts ties consistently', async () => {
@@ -41,12 +49,13 @@ describe('task behavior independent of Nest and PostgreSQL', () => {
       await repository.add(
         Task.create({
           id: String(index).padStart(3, '0'),
+          ownerId: 'owner-id',
           title: 'Task',
           createdAt: '2026-01-01T00:00:00.000Z',
         }),
       );
     }
-    const result = await repository.listRecent();
+    const result = await repository.listRecent('owner-id');
     expect(result).toHaveLength(100);
     expect(result[0]?.id).toBe('104');
     expect(result[99]?.id).toBe('005');

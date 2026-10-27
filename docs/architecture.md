@@ -77,21 +77,26 @@ explicit version/locking policy where required.
 TanStack Query owns frontend server state. Local React state owns the input and
 filter. Successful mutations invalidate the task query; retries are disabled for
 mutations to avoid automatically repeating task creation. Failed input is preserved.
-Queries can be cancelled and HTTP requests have a timeout. There is no separate
-global state store for data already managed by the query cache.
+Queries can be cancelled and HTTP requests have a timeout. Private query keys include the account ID. Session transitions cancel work and remove
+private cache entries; HTTP refresh is coordinated and retried once. There is no
+separate global state store for data already managed by the query cache.
 
 ## Configuration and runtime behavior
 
 Nest configuration is validated once at startup. PostgreSQL mode requires its URL;
 production refuses memory mode. The pool closes through Nest lifecycle hooks.
-Migrations are explicit and do not run on each API process startup. Both adapters
-have matching recent-order semantics.
+Migrations are explicit and do not run on each API process startup. Both task adapters have matching recent-order semantics and filter by the authenticated
+owner. Identity and media also have memory/PostgreSQL ports and adapters. Database file
+bytes are transactional; object storage uses a replaceable S3 adapter with metadata
+failure compensation.
 
-The Next proxy permits only the task/health resources, forwards only exported HTTP
+The Next proxy permits only listed task, health, identity, and media resources, forwards only exported HTTP
 methods to a fixed server-configured origin, bounds request bodies, rejects redirects,
 times out upstream calls, and prevents caching API responses. It never accepts an
-upstream URL from the caller. No cookies or bearer credentials are forwarded in this
-unauthenticated sample; design that propagation together with the future auth model.
+upstream URL from the caller. Only the named access/refresh cookies and explicitly supplied Authorization header
+are forwarded. Separate Set-Cookie headers are preserved. Unsafe operations require
+a custom CSRF header and matching Origin checks. See `foundation-features.md` for
+the implemented identity, media, and query-cache boundaries.
 
 The API uses small body limits, generated request IDs, headers, and an in-process
 rate limiter. With multiple API replicas, choose an ingress or shared rate-limit
@@ -117,3 +122,20 @@ Extract a package only when it has an actual independent consumer or ownership
 boundary. Keep business modules in the API until there is a reason to move them.
 Introduce workers, queues, event buses, distributed transactions, or microservices
 when a concrete product requirement makes their operational cost worthwhile.
+
+## Foundation modules
+
+Read [foundation features](foundation-features.md) for authentication, profile and media
+contracts, cookie/CSRF policies, SQL transactions, storage limits, runtime variables,
+and tested browser behavior. Password and token adapters live in identity infrastructure;
+application services depend on their ports. The default authorization rule is authenticated
+access, with explicit public-route metadata for session bootstrap/auth entrypoints and health.
+
+## Email identity lifecycle
+
+Registration commits a pending account and outbox job together. Verification is required
+for login, refresh, and private routes, including accounts that existed before the migration.
+Purpose-bound opaque credentials are consumed under the account lock. Password reset
+atomically consumes the credential, changes the password, revokes sessions, and queues a
+notification. A leased outbox worker sends through an EmailDelivery port; raw tokens are
+not stored in jobs. See [email auth](email-auth.md) for retry, privacy, SMTP, and migration details.

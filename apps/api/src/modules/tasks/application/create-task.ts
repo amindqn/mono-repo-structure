@@ -9,8 +9,13 @@ export class CreateTask {
     private readonly now: () => Date,
   ) {}
 
-  async execute(title: string): Promise<Task> {
-    const task = Task.create({ id: this.newId(), title, createdAt: this.now().toISOString() });
+  async execute(title: string, ownerId: string): Promise<Task> {
+    const task = Task.create({
+      id: this.newId(),
+      ownerId,
+      title,
+      createdAt: this.now().toISOString(),
+    });
     await this.repository.add(task);
     return task;
   }

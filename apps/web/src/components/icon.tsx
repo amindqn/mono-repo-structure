@@ -1,6 +1,23 @@
 import type { CSSProperties } from 'react';
 
 const paths = {
+  files: (
+    <>
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
+      <path d="M14 2v6h6M8 13h8M8 17h5" />
+    </>
+  ),
+  user: (
+    <>
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 22v-3a8 8 0 0 1 16 0v3" />
+    </>
+  ),
+  logout: (
+    <>
+      <path d="M9 4H4v16h5M12 12h9m-4-4 4 4-4 4" />
+    </>
+  ),
   layers: (
     <>
       <path d="m12 3 9 5-9 5-9-5 9-5Z" />

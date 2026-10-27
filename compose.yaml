@@ -31,9 +31,17 @@ services:
       context: .
       dockerfile: apps/api/Dockerfile
     environment:
+      # This Compose file is a local HTTP development stack. Images default to production.
+      NODE_ENV: development
+      COOKIE_SECURE: 'false'
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?Run pnpm setup:env before starting Compose}
       PERSISTENCE: postgres
       DATABASE_URL: postgresql://app:local-development-only@db:5432/web_platform
       DOCS_ENABLED: 'false'
+      MAIL_TRANSPORT: file
+      EMAIL_WEB_ORIGIN: http://localhost:3000
+    volumes:
+      - mail_data:/app/output/mail
     depends_on:
       migrate:
         condition: service_completed_successfully
@@ -52,3 +60,4 @@ services:
 
 volumes:
   postgres_data:
+  mail_data:

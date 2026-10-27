@@ -1,7 +1,75 @@
 {
   "extends": ["//"],
   "tasks": {
-    "typecheck": { "dependsOn": ["build"] },
-    "test": { "dependsOn": ["build"] }
+    "typecheck": {
+      "dependsOn": ["build"]
+    },
+    "test": {
+      "dependsOn": ["build"]
+    },
+    "dev": {
+      "passThroughEnv": [
+        "PORT",
+        "HOST",
+        "NODE_ENV",
+        "DATABASE_URL",
+        "PERSISTENCE",
+        "LOG_LEVEL",
+        "DOCS_ENABLED",
+        "JWT_ACCESS_SECRET",
+        "ACCESS_TOKEN_TTL_SECONDS",
+        "REFRESH_TOKEN_TTL_SECONDS",
+        "COOKIE_SECURE",
+        "TRUSTED_ORIGINS",
+        "S3_BUCKET",
+        "S3_REGION",
+        "S3_ENDPOINT",
+        "S3_ACCESS_KEY_ID",
+        "S3_SECRET_ACCESS_KEY",
+        "AWS_*",
+        "MAIL_TRANSPORT",
+        "MAIL_OUTPUT_DIR",
+        "EMAIL_FROM",
+        "EMAIL_WEB_ORIGIN",
+        "SMTP_HOST",
+        "SMTP_PORT",
+        "SMTP_SECURE",
+        "SMTP_REQUIRE_TLS",
+        "SMTP_USER",
+        "SMTP_PASSWORD"
+      ]
+    },
+    "start": {
+      "passThroughEnv": [
+        "PORT",
+        "HOST",
+        "NODE_ENV",
+        "DATABASE_URL",
+        "PERSISTENCE",
+        "LOG_LEVEL",
+        "DOCS_ENABLED",
+        "JWT_ACCESS_SECRET",
+        "ACCESS_TOKEN_TTL_SECONDS",
+        "REFRESH_TOKEN_TTL_SECONDS",
+        "COOKIE_SECURE",
+        "TRUSTED_ORIGINS",
+        "S3_BUCKET",
+        "S3_REGION",
+        "S3_ENDPOINT",
+        "S3_ACCESS_KEY_ID",
+        "S3_SECRET_ACCESS_KEY",
+        "AWS_*",
+        "MAIL_TRANSPORT",
+        "MAIL_OUTPUT_DIR",
+        "EMAIL_FROM",
+        "EMAIL_WEB_ORIGIN",
+        "SMTP_HOST",
+        "SMTP_PORT",
+        "SMTP_SECURE",
+        "SMTP_REQUIRE_TLS",
+        "SMTP_USER",
+        "SMTP_PASSWORD"
+      ]
+    }
   }
 }

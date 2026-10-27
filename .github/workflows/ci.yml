@@ -30,6 +30,7 @@ jobs:
           --health-timeout 5s
           --health-retries 10
     env:
+      JWT_ACCESS_SECRET: ci-only-disposable-signing-key-12345678901234567890
       NEXT_TELEMETRY_DISABLED: '1'
       TEST_DATABASE_URL: postgresql://test:test@127.0.0.1:55432/web_platform_test
     steps:
@@ -46,10 +47,7 @@ jobs:
       - run: docker compose build
       - run: docker compose up -d --wait
       - name: Check the deployed frontend and database-backed API
-        run: |
-          curl --fail --silent http://localhost:3000/ > /dev/null
-          curl --fail --silent http://localhost:3000/api/v1/health/ready
-          curl --fail --silent -X POST http://localhost:3000/api/v1/tasks -H 'Content-Type: application/json' --data '{"title":"Container smoke test"}'
+        run: node scripts/smoke-stack.mjs
       - if: failure()
         run: docker compose logs --no-color
       - if: always()

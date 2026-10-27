@@ -20,13 +20,18 @@ entities, commands, and adapters; React stays idiomatic functional React.
 | Facade                     | `ApiClient`                                               | Give callers a small, validated HTTP interface          |
 | Proxy                      | Next API route handler                                    | Mediate same-origin access to a fixed backend           |
 | Command                    | `CreateTask` and `ChangeTaskStatus`                       | Encapsulate one application operation                   |
-| Strategy                   | Repository selection through the persistence port         | Exchange storage behavior through composition           |
+| Strategy                   | Database/S3 media storage selected through `MediaStorage` | Exchange storage behavior through composition           |
 | Observer, library-provided | Query cache subscriptions                                 | Keep components synchronized after invalidation         |
 
 Nest decorators are language/framework metadata decorators, not evidence that the
 GoF object-composition Decorator pattern was implemented. Nest providers have an
 application-scoped singleton lifetime by default; this does not introduce a global
 handwritten Singleton. These distinctions avoid using pattern names as decoration.
+
+Identity services also depend on small password/token ports. Scrypt, JWT signing,
+PostgreSQL session transactions, and cookie handling are separate adapters. Media
+upload compensates an object write when metadata persistence fails; it does not
+pretend that a bucket and PostgreSQL share one transaction.
 
 ## Full requested catalog
 

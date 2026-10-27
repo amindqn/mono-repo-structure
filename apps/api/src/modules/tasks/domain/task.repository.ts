@@ -4,7 +4,7 @@ export const TASK_REPOSITORY = Symbol('TASK_REPOSITORY');
 
 /** Small persistence port. Updates are atomic; callers do not perform read-modify-write. */
 export interface TaskRepository {
-  listRecent(): Promise<Task[]>;
+  listRecent(ownerId: string): Promise<Task[]>;
   add(task: Task): Promise<void>;
-  changeStatus(id: string, status: TaskStatus): Promise<Task | null>;
+  changeStatus(id: string, status: TaskStatus, ownerId: string): Promise<Task | null>;
 }

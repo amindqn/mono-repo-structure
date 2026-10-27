@@ -5,6 +5,7 @@ export const createTaskSchema = z.strictObject({ title: z.string().trim().min(1)
 export const updateTaskSchema = z.strictObject({ status: taskStatusSchema });
 export const taskSchema = z.strictObject({
   id: z.uuid(),
+  ownerId: z.uuid(),
   title: z.string().min(1).max(120),
   status: taskStatusSchema,
   createdAt: z.iso.datetime(),
@@ -25,3 +26,6 @@ export type TaskDto = z.infer<typeof taskSchema>;
 export type CreateTaskInput = z.infer<typeof createTaskSchema>;
 export type UpdateTaskInput = z.infer<typeof updateTaskSchema>;
 export type ApiProblem = z.infer<typeof apiProblemSchema>;
+
+export * from './identity.js';
+export * from './media.js';

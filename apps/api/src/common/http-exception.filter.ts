@@ -3,6 +3,7 @@ import type { ArgumentsHost, ExceptionFilter } from '@nestjs/common';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { ZodValidationException } from 'nestjs-zod';
 import { TaskNotFound } from '../modules/tasks/application/task-not-found.js';
+import { ApplicationError } from './application-error.js';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -15,7 +16,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
     let status = 500;
     let code = 'INTERNAL_ERROR';
     let message = 'An unexpected error occurred';
-    if (error instanceof TaskNotFound) {
+    if (error instanceof ApplicationError) {
+      status = error.status;
+      code = error.code;
+      message = error.message;
+    } else if (error instanceof TaskNotFound) {
       status = 404;
       code = 'TASK_NOT_FOUND';
       message = error.message;

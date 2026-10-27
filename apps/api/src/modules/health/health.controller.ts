@@ -4,10 +4,12 @@ import { healthSchema } from '@repo/contracts';
 import { createZodDto, ZodResponse } from 'nestjs-zod';
 import { PERSISTENCE } from '../../infrastructure/persistence.module.js';
 import type { Persistence } from '../../infrastructure/persistence.module.js';
+import { Public } from '../../common/auth-context.js';
 
 class HealthDto extends createZodDto(healthSchema) {}
 
 @ApiTags('health')
+@Public()
 @Controller('health')
 export class HealthController {
   constructor(@Inject(PERSISTENCE) private readonly persistence: Persistence) {}

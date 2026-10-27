@@ -8,7 +8,7 @@
     "build": "next build && node scripts/prepare-standalone.mjs",
     "start": "node --env-file-if-exists=.env.local scripts/start.mjs",
     "typecheck": "next typegen && tsc --noEmit",
-    "test": "tsx --test test/api-proxy.test.ts"
+    "test": "tsx --test test/*.test.ts"
   },
   "dependencies": {
     "@repo/api-client": "workspace:*",

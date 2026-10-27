@@ -18,7 +18,10 @@
     "db:migrate": "node --env-file-if-exists=.env --import tsx src/infrastructure/database/migrate.ts"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "catalog:",
+    "@fastify/cookie": "catalog:",
     "@fastify/helmet": "catalog:",
+    "@fastify/multipart": "catalog:",
     "@fastify/rate-limit": "catalog:",
     "@fastify/static": "catalog:",
     "@nestjs/common": "catalog:",
@@ -28,7 +31,10 @@
     "@repo/contracts": "workspace:*",
     "drizzle-orm": "catalog:",
     "fastify": "catalog:",
+    "file-type": "catalog:",
+    "jose": "catalog:",
     "nestjs-zod": "catalog:",
+    "nodemailer": "catalog:",
     "pg": "catalog:",
     "reflect-metadata": "catalog:",
     "rxjs": "catalog:",
@@ -37,6 +43,7 @@
   "devDependencies": {
     "@repo/tooling": "workspace:*",
     "@types/node": "catalog:",
+    "@types/nodemailer": "catalog:",
     "@types/pg": "catalog:",
     "concurrently": "catalog:",
     "drizzle-kit": "catalog:",

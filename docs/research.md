@@ -121,9 +121,9 @@ include the fixes; recheck adapter compatibility and the audit on upgrades.
 
 ## Scope decisions
 
-The repository demonstrates create/list/update operations, validation, error handling,
-PostgreSQL persistence, a disposable development adapter, health endpoints, tests,
-containers, and CI. Authentication, tenant isolation, payments, queues, and deployment
-to a provider require actual product requirements. They are not represented by empty
-folders or pretend implementations. The task API is an unauthenticated example and
-must receive authorization rules before being offered as a real multi-user service.
+The repository now also implements authentication, rotating refresh sessions, user profiles,
+private tasks, and media uploads to database or object storage. The original starter
+research above remains the workspace rationale. The follow-up [foundation design](foundation-features.md)
+records the added features and current primary sources for passwords, refresh replay,
+CSRF, file handling, and React Query policies. Email verification/recovery, MFA, and
+external identity providers require further product/provider choices.

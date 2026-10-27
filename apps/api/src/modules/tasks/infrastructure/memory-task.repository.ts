@@ -6,8 +6,9 @@ import type { TaskRepository } from '../domain/task.repository.js';
 export class MemoryTaskRepository implements TaskRepository {
   private readonly tasks = new Map<string, Task>();
 
-  async listRecent(): Promise<Task[]> {
+  async listRecent(ownerId: string): Promise<Task[]> {
     return [...this.tasks.values()]
+      .filter((task) => task.toSnapshot().ownerId === ownerId)
       .sort((a, b) => {
         const left = a.toSnapshot();
         const right = b.toSnapshot();
@@ -21,9 +22,9 @@ export class MemoryTaskRepository implements TaskRepository {
     this.tasks.set(task.id, task);
   }
 
-  async changeStatus(id: string, status: TaskStatus): Promise<Task | null> {
+  async changeStatus(id: string, status: TaskStatus, ownerId: string): Promise<Task | null> {
     const task = this.tasks.get(id);
-    if (!task) return null;
+    if (!task || task.toSnapshot().ownerId !== ownerId) return null;
     const changed = Task.restore({ ...task.toSnapshot(), status });
     this.tasks.set(id, changed);
     return changed;

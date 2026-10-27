@@ -9,6 +9,7 @@
     "pnpm": ">=11 <12"
   },
   "scripts": {
+    "setup:env": "node scripts/setup-env.mjs",
     "dev": "turbo run build --filter='./packages/*' && turbo run dev",
     "build": "turbo run build",
     "start": "turbo run start",

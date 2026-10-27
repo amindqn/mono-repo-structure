@@ -10,6 +10,7 @@ FROM node:24-bookworm-slim AS runtime
 ENV NODE_ENV=production HOST=0.0.0.0 PORT=4000
 WORKDIR /app
 COPY --from=build --chown=node:node /out/api/ ./
+RUN mkdir -p /app/output/mail && chown -R node:node /app/output && chmod 700 /app/output/mail
 USER node
 EXPOSE 4000
 HEALTHCHECK --interval=20s --timeout=5s --start-period=15s CMD ["node", "-e", "fetch('http://127.0.0.1:4000/api/v1/health/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]

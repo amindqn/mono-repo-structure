@@ -10,32 +10,20 @@
     "dev": {
       "cache": false,
       "persistent": true,
-      "passThroughEnv": [
-        "PORT",
-        "HOST",
-        "NODE_ENV",
-        "DATABASE_URL",
-        "PERSISTENCE",
-        "LOG_LEVEL",
-        "API_ORIGIN",
-        "DOCS_ENABLED"
-      ]
+      "passThroughEnv": ["PORT", "HOST", "NODE_ENV"]
     },
     "start": {
       "cache": false,
       "persistent": true,
-      "passThroughEnv": [
-        "PORT",
-        "HOST",
-        "NODE_ENV",
-        "DATABASE_URL",
-        "PERSISTENCE",
-        "LOG_LEVEL",
-        "API_ORIGIN",
-        "DOCS_ENABLED"
-      ]
+      "passThroughEnv": ["PORT", "HOST", "NODE_ENV"]
     },
-    "typecheck": { "dependsOn": ["^build"], "outputs": [] },
-    "test": { "dependsOn": ["^build"], "outputs": [] }
+    "typecheck": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "test": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    }
   }
 }

@@ -8,6 +8,20 @@
       "when": 1793077085863,
       "tag": "0000_yielding_komodo",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793079223701,
+      "tag": "0001_unusual_nitro",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793088135920,
+      "tag": "0002_flawless_ozymandias",
+      "breakpoints": true
     }
   ]
 }

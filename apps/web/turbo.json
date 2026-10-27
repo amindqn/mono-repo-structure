@@ -1,0 +1,11 @@
+{
+  "extends": ["//"],
+  "tasks": {
+    "dev": {
+      "passThroughEnv": ["PORT", "HOST", "NODE_ENV", "API_ORIGIN", "APP_ORIGIN"]
+    },
+    "start": {
+      "passThroughEnv": ["PORT", "HOST", "NODE_ENV", "API_ORIGIN", "APP_ORIGIN"]
+    }
+  }
+}

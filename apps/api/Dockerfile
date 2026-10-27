@@ -1,4 +1,4 @@
-FROM node:24-bookworm-slim AS build
+FROM node:26-bookworm-slim AS build
 RUN npm install --global pnpm@11.15.1
 WORKDIR /app
 COPY . .
@@ -6,7 +6,7 @@ RUN pnpm install --frozen-lockfile
 RUN pnpm exec turbo run build --filter=@repo/api
 RUN pnpm --filter @repo/api deploy --prod --legacy /out/api
 
-FROM node:24-bookworm-slim AS runtime
+FROM node:26-bookworm-slim AS runtime
 ENV NODE_ENV=production HOST=0.0.0.0 PORT=4000
 WORKDIR /app
 COPY --from=build --chown=node:node /out/api/ ./

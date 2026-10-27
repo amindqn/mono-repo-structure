@@ -1,0 +1,41 @@
+{
+  "$schema": "https://turborepo.dev/schema.json",
+  "globalDependencies": ["tsconfig.json"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
+      "env": ["NEXT_TELEMETRY_DISABLED"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "passThroughEnv": [
+        "PORT",
+        "HOST",
+        "NODE_ENV",
+        "DATABASE_URL",
+        "PERSISTENCE",
+        "LOG_LEVEL",
+        "API_ORIGIN",
+        "DOCS_ENABLED"
+      ]
+    },
+    "start": {
+      "cache": false,
+      "persistent": true,
+      "passThroughEnv": [
+        "PORT",
+        "HOST",
+        "NODE_ENV",
+        "DATABASE_URL",
+        "PERSISTENCE",
+        "LOG_LEVEL",
+        "API_ORIGIN",
+        "DOCS_ENABLED"
+      ]
+    },
+    "typecheck": { "dependsOn": ["^build"], "outputs": [] },
+    "test": { "dependsOn": ["^build"], "outputs": [] }
+  }
+}

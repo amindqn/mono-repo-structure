@@ -1,0 +1,10 @@
+node_modules
+pnpm-lock.yaml
+dist
+.next
+.turbo
+coverage
+output
+.playwright-cli
+next-env.d.ts
+apps/api/drizzle/meta

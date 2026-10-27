@@ -1,0 +1,10 @@
+{
+  "extends": "@repo/tooling/tsconfig/node.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "types": ["node"]
+  },
+  "include": ["src", "test", "drizzle.config.ts"]
+}

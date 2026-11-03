@@ -22,7 +22,7 @@ catalog:
   concurrently: 10.0.6
   drizzle-kit: 0.31.11
   drizzle-orm: 0.45.4
-  eslint: 10.13.0
+  eslint: 10.14.0
   eslint-plugin-react-hooks: 7.1.1
   fastify: 5.12.7
   file-type: 22.2.0
@@ -41,7 +41,7 @@ catalog:
   tsx: 4.23.15
   turbo: 2.11.10
   typescript: 5.9.3
-  typescript-eslint: 8.72.0
+  typescript-eslint: 8.72.1
   vitest: 5.0.5
   vite: 8.3.5
   zod: 4.6.7
